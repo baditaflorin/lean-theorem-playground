@@ -23,7 +23,7 @@ dev:
 	npm run dev
 
 build:
-	VITE_APP_VERSION=$$(node -p "require('./package.json').version") VITE_COMMIT_SHA=$$(git rev-parse --short=12 HEAD 2>/dev/null || printf dev) npm run build
+	VITE_APP_VERSION=$$(node -p "require('./package.json').version") npm run build
 	test -f docs/index.html
 
 data:
@@ -64,4 +64,3 @@ release:
 
 clean:
 	rm -rf coverage playwright-report test-results docs/assets
-

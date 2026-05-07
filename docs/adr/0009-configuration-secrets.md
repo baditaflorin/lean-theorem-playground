@@ -10,7 +10,7 @@ The frontend is public static code and must never contain secrets.
 
 ## Decision
 
-Use build-time public constants for version, commit, repository URL, PayPal URL, and Pages URL. Keep `.env.example` placeholder-only. Do not support secret runtime configuration.
+Use build-time public constants for version, repository URL, PayPal URL, and Pages URL. Fetch the latest public GitHub commit SHA from the unauthenticated GitHub API at runtime, with a static fallback. Keep `.env.example` placeholder-only. Do not support secret runtime configuration.
 
 ## Consequences
 

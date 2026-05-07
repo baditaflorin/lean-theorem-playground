@@ -14,6 +14,7 @@ Progress is stored in browser IndexedDB. Local WebLLM model assets are downloade
 ## Network Requests
 
 - GitHub Pages serves the static app.
+- The app requests the public GitHub commits API to show the latest repository commit.
 - Starting WebLLM may download model/runtime assets from WebLLM model hosts.
 - Rendering with Pandoc may request the `pandoc-wasm` browser package from `https://esm.sh`.
 

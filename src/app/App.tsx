@@ -91,6 +91,10 @@ export function App(): JSX.Element {
     queryKey: ["lean-runtime"],
     queryFn: initializeLeanRuntime,
   });
+  const latestCommit = useQuery<string>({
+    queryKey: ["github-main-commit"],
+    queryFn: fetchLatestCommit,
+  });
 
   const code =
     codeByExercise[selectedExercise.id] ?? selectedExercise.starterCode;
@@ -262,7 +266,11 @@ export function App(): JSX.Element {
 
   return (
     <div className="app-shell">
-      <Header solvedCount={solvedCount} runtime={runtime.data} />
+      <Header
+        solvedCount={solvedCount}
+        runtime={runtime.data}
+        commitSha={latestCommit.data ?? __COMMIT_SHA__}
+      />
 
       {toast ? (
         <div
@@ -507,9 +515,11 @@ export function App(): JSX.Element {
 function Header({
   solvedCount,
   runtime,
+  commitSha,
 }: {
   solvedCount: number;
   runtime: LeanRuntimeStatus | undefined;
+  commitSha: string;
 }): JSX.Element {
   return (
     <header className="topbar">
@@ -526,7 +536,7 @@ function Header({
       </a>
       <nav className="top-links" aria-label="Project links">
         <span className="version-pill">v{__APP_VERSION__}</span>
-        <span className="version-pill">commit {__COMMIT_SHA__}</span>
+        <span className="version-pill">commit {commitSha}</span>
         <span className="version-pill">{runtime?.mode ?? "loading"}</span>
         <span className="version-pill">{solvedCount} solved</span>
         <a href={repositoryUrl} target="_blank" rel="noreferrer">
@@ -542,6 +552,17 @@ function Header({
       </nav>
     </header>
   );
+}
+
+async function fetchLatestCommit(): Promise<string> {
+  const response = await fetch(
+    "https://api.github.com/repos/baditaflorin/lean-theorem-playground/commits/main",
+  );
+  if (!response.ok) {
+    throw new Error("Unable to fetch latest commit.");
+  }
+  const payload = (await response.json()) as { sha?: string };
+  return payload.sha?.slice(0, 12) ?? __COMMIT_SHA__;
 }
 
 function ExerciseButton({
