@@ -17,4 +17,3 @@ make dev
 - Do not commit secrets, `.env` files with real values, model credentials, private keys, or local hostnames.
 - Add or update ADRs before significant architecture changes.
 - Run `make lint`, `make test`, `make build`, and `make smoke` before pushing.
-

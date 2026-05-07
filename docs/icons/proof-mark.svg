@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Lean Theorem Playground mark">
+  <rect width="96" height="96" rx="18" fill="#111827"/>
+  <path d="M24 30h27c9 0 16 7 16 16s-7 16-16 16H39" fill="none" stroke="#5eead4" stroke-width="8" stroke-linecap="round"/>
+  <path d="M28 62l15-32 25 44" fill="none" stroke="#c4b5fd" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="68" cy="27" r="7" fill="#facc15"/>
+</svg>
+

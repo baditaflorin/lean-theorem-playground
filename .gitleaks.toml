@@ -1,0 +1,7 @@
+[allowlist]
+description = "Generated Pages assets are reproducible build output and too large for staged scans."
+paths = [
+  '''docs/assets/.*''',
+  '''docs/media/screenshot\.png''',
+]
+

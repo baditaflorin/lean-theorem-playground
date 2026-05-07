@@ -25,4 +25,3 @@ The v1 public surface is a static browser app. Lean execution is isolated behind
 
 - Mode B: unnecessary because v1 has no external data pipeline.
 - Mode C: rejected because there are no runtime secrets, writes, auth, or cross-device sync requirements.
-

@@ -23,4 +23,3 @@ Publish GitHub Pages from the `main` branch `/docs` directory. Vite builds into 
 
 - `gh-pages` branch: keeps generated assets separate, but makes the first commit live-site requirement and documentation discovery more awkward.
 - Root publishing: would expose source/build files as the site root.
-

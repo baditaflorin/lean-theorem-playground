@@ -1,0 +1,18 @@
+{
+  "name": "Lean Theorem Playground",
+  "short_name": "Lean Playground",
+  "description": "Browser-based Lean 4 playground with local tutoring and proof export.",
+  "start_url": "/lean-theorem-playground/",
+  "scope": "/lean-theorem-playground/",
+  "display": "standalone",
+  "background_color": "#eef3f9",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "/lean-theorem-playground/icons/proof-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

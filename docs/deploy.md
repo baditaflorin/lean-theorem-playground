@@ -28,4 +28,3 @@ git push origin main
 ## Custom Domain
 
 If a custom domain is added later, create `docs/CNAME` with the domain and configure DNS with a `CNAME` record to `baditaflorin.github.io`.
-

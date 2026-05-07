@@ -23,6 +23,8 @@ make build
 
 Lean Theorem Playground is a static GitHub Pages app for learning the path from mathematical intuition to Lean-style formal proof. It ships a proof workbench, five Mathlib-oriented starter exercises, a local WebGPU LLM tutor option through WebLLM, IndexedDB progress persistence, and Markdown/HTML export with a Pandoc-WASM attempt plus a deterministic browser fallback.
 
+![Lean Theorem Playground screenshot](docs/media/screenshot.png)
+
 ## Architecture
 
 ```mermaid
@@ -48,4 +50,3 @@ make install-hooks
 ```
 
 Hooks run formatting, linting, typechecking, gitleaks, tests, build, and smoke checks locally. There are no GitHub Actions in this project.
-

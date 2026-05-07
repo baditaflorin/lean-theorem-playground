@@ -7,4 +7,3 @@ Be kind, rigorous, and constructive. Disagreements should focus on ideas, code, 
 Report unacceptable behavior through:
 
 https://github.com/baditaflorin/lean-theorem-playground/security/advisories/new
-

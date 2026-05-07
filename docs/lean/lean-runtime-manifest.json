@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "leanVersion": "4.29.x-compatible adapter",
+  "mathlibSnapshot": "Mathlib exercise index v1",
+  "assets": {},
+  "notes": [
+    "Place official Lean 4 Emscripten outputs and Mathlib library archives here when using a full client-side kernel build.",
+    "Expected optional paths: lean/lean_js_wasm.js, lean/lean_js_wasm.wasm, lean/library.zip."
+  ]
+}
