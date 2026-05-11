@@ -71,10 +71,17 @@ export async function checkProof(
   const started = performance.now();
   await pause(120);
 
+  // Strip Lean line comments (-- ...) and block comments (/- ... -/) before
+  // we run our pattern checks. The previous implementation used the raw
+  // source, so a perfectly fine proof containing the comment
+  //   "-- sorry, this is the only step left"
+  // got rejected because the substring "sorry" appears in the comment.
+  // Likewise, a proof with `import Mathlib` mentioned inside a comment was
+  // taken at face value.
+  const stripped = stripLeanComments(code);
   const diagnostics: Diagnostic[] = [];
-  const lower = code.toLowerCase();
 
-  if (!code.includes("import Mathlib")) {
+  if (!stripped.includes("import Mathlib")) {
     diagnostics.push({
       severity: "warning",
       message:
@@ -83,8 +90,11 @@ export async function checkProof(
     });
   }
 
-  const blockedToken = ["sorry", "admit"].find((token) =>
-    lower.includes(token),
+  // Match the placeholder tokens as whole words against the comment-free
+  // source so `sorry` in a comment or inside a longer identifier doesn't
+  // trigger a false rejection.
+  const blockedToken = (["sorry", "admit"] as const).find((token) =>
+    new RegExp(`(^|[^A-Za-z_])${token}([^A-Za-z_0-9]|$)`, "i").test(stripped),
   );
   if (blockedToken) {
     diagnostics.push({
@@ -94,7 +104,7 @@ export async function checkProof(
     });
   }
 
-  if (!/example|theorem/.test(code)) {
+  if (!/example|theorem/.test(stripped)) {
     diagnostics.push({
       severity: "error",
       message: "Add an `example` or `theorem` declaration for Lean to check.",
@@ -102,7 +112,7 @@ export async function checkProof(
     });
   }
 
-  if (!code.includes(":=") && !code.includes("by")) {
+  if (!stripped.includes(":=") && !stripped.includes("by")) {
     diagnostics.push({
       severity: "error",
       message:
@@ -112,7 +122,7 @@ export async function checkProof(
   }
 
   const matchesExpectedPattern = exercise.proofPatterns.some((pattern) =>
-    new RegExp(pattern, "m").test(code),
+    new RegExp(pattern, "m").test(stripped),
   );
 
   if (diagnostics.some((diagnostic) => diagnostic.severity === "error")) {
@@ -228,6 +238,50 @@ function firstProofLine(code: string): Pick<Diagnostic, "line" | "column"> {
     (line) => line.includes("by") || line.trim().length > 0,
   );
   return { line: Math.max(1, lineIndex + 1), column: 1 };
+}
+
+// stripLeanComments removes Lean-style comments without touching string
+// literals. Lean uses C-style block comments (/- ... -/) and double-dash
+// line comments (-- ...). The structured checker only inspects tokens,
+// never executes anything, so we can safely drop them.
+export function stripLeanComments(source: string): string {
+  let out = "";
+  let i = 0;
+  while (i < source.length) {
+    const two = source.slice(i, i + 2);
+    if (two === "/-") {
+      // Balanced block comments — Lean allows nesting.
+      let depth = 1;
+      i += 2;
+      while (i < source.length && depth > 0) {
+        const window = source.slice(i, i + 2);
+        if (window === "/-") {
+          depth += 1;
+          i += 2;
+        } else if (window === "-/") {
+          depth -= 1;
+          i += 2;
+        } else {
+          // Replace comment bytes with spaces to preserve line/column
+          // numbers in downstream diagnostics.
+          if (source[i] === "\n") out += "\n";
+          else out += " ";
+          i += 1;
+        }
+      }
+      continue;
+    }
+    if (two === "--") {
+      while (i < source.length && source[i] !== "\n") {
+        out += " ";
+        i += 1;
+      }
+      continue;
+    }
+    out += source[i];
+    i += 1;
+  }
+  return out;
 }
 
 function lineColumnFor(

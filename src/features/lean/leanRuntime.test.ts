@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { exercises, findExercise } from "./exercises";
-import { checkProof } from "./leanRuntime";
+import { checkProof, stripLeanComments } from "./leanRuntime";
 
 describe("checkProof", () => {
   it("accepts bundled starter proofs", async () => {
@@ -22,6 +22,32 @@ describe("checkProof", () => {
         diagnostic.message.includes("sorry"),
       ),
     ).toBe(true);
+  });
+
+  it("does not reject a proof that only mentions sorry inside a comment", async () => {
+    // Regression: the previous checker did toLowerCase().includes("sorry"),
+    // which flagged the comment "-- sorry, I tried this first" even when
+    // the actual proof was clean.
+    const exercise = findExercise("two-plus-two");
+    const result = await checkProof(
+      [
+        "import Mathlib",
+        "-- sorry, I tried this approach first but found a cleaner one.",
+        "example : 2 + 2 = 4 := by norm_num",
+      ].join("\n"),
+      exercise,
+    );
+    expect(result.status).toBe("success");
+  });
+
+  it("strips nested block comments", () => {
+    const stripped = stripLeanComments(
+      "import Mathlib\n/- outer /- inner -/ still outer -/example : True := by trivial",
+    );
+    expect(stripped).toContain("import Mathlib");
+    expect(stripped).toContain("example : True := by trivial");
+    expect(stripped).not.toContain("outer");
+    expect(stripped).not.toContain("inner");
   });
 
   it("returns a remaining goal for unrecognized proof attempts", async () => {
